@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Docs</title>
+    <script type="module" crossorigin src="/assets/index.c82869af.js"></script>
+    <link rel="stylesheet" href="/assets/index.389c5ff9.css">
+  </head>
+  <body>
+    <canvas id="bg"></canvas>
+
+    <main>
+      <header>
+        <h1>Hi All</h1>
+        <p>🚀 This is my Three js Documentation website!</p>
+      </header>
+
+      <blockquote>
+        <p>Here you can look at a brief theory material for learning Three js.</p>
+      </blockquote>
+
+      <section>
+        <h2>Three-js-fundamentals</h2>
+        <ul>
+          <li>
+            There is a <b>Renderer</b>. This is arguably the main object of three.js. You pass a Scene and a Camera to a Renderer and it renders (draws) the portion of the 3D scene that is inside the frustum of the camera as a 2D image to a canvas.
+          </li>
+          <br />
+          <li>
+            There is a <b>scenegraph</b> which is a tree like structure, consisting of various objects like a Scene object, multiple Mesh objects, Light objects, Group, Object3D, and Camera objects. A Scene object defines the root of the scenegraph
+            and contains properties like the background color and fog. These objects define a hierarchical parent/child tree like structure and represent where objects appear and how they are oriented.
+          </li>
+          <br />
+          <li>
+            <b>Mesh</b> objects represent drawing a specific Geometry with a specific Material. Both Material objects and Geometry objects can be used by multiple Mesh objects. For example to draw two blue cubes in different locations we could need
+            two Mesh objects to represent the position and orientation of each cube. We would only need one Geometry to hold the vertex data for a cube and we would only need one Material to specify the color blue. Both Mesh objects could reference
+            the same Geometry object and the same Material object.
+          </li>
+          <br />
+          <li>Lastly, <b>light</b> objects represent different kinds of lights.</li>
+        </ul>
+        <img src="https://threejs.org/manual/resources/images/threejs-1cube-no-light-scene.svg" alt="fundamentals" />
+      </section>
+
+      <section class="scene">
+        <h2>SceneGraph</h2>
+
+        <p>
+          Three.js's core is arguably its scene graph. A scene graph in a 3D engine is a hierarchy of nodes in a graph where each node represents a local space. You can reffer to my example of a <a href="solarSystem.html">solar system</a> to look
+          into while reading theory
+        </p>
+        <br />
+        <br />
+        <p>
+          The Earth orbits the Sun. The Moon orbits the Earth. The Moon moves in a circle around the Earth. From the Moon's point of view it's rotating in the "local space" of the Earth. Even though its motion relative to the Sun is some crazy
+          spirograph like curve from the Moon's point of view it just has to concern itself with rotating around the Earth's local space. To think of it another way, you living on the Earth do not have to think about the Earth's rotation on its axis
+          nor its rotation around the Sun. You just walk or drive or swim or run as though the Earth is not moving or rotating at all. You walk, drive, swim, run, and live in the Earth's "local space" even though relative to the sun you are spinning
+          around the earth at around 1000 miles per hour and around the sun at around 67,000 miles per hour. Your position in the solar system is similar to that of the moon above but you don't have to concern yourself. You just worry about your
+          position relative to the earth in its "local space". In the code we look at the solar system from directly above the origin looking down. Many a times we noticed that each time we write code in the local space of earth or sun, random things
+          happen, for eg sun and earth's size becomes equal, earth rotates too far. We made the earthMesh a child of the sunMesh. The sunMesh has its scale set to 5x with >`sunMesh.scale.set(5, 5, 5)`. That means the sunMeshs local space is 5 times
+          as big. Anything put in that space will be multiplied by 5. That means the earth is now 5x larger and its distance from the sun (earthMesh.position.x = 10) is also 5x as well.
+
+          <image src="https://threejs.org/manual/resources/images/scenegraph-sun-earth.svg" />
+
+          To fix it we add an empty scene graph node. We'll parent both the sun and the earth to that node. Our new scene graph will look like this.
+
+          <image src="https://threejs.org/manual/resources/images/scenegraph-sun-earth-fixed.svg" />
+
+          Again we added more invisible scene graph nodes. The first, an Object3D called earthOrbit and added both the earthMesh and the moonOrbit to it. We then added the moonMesh to the moonOrbit. The new scene graph looks like this.
+
+          <image src="https://threejs.org/manual/resources/images/scenegraph-sun-earth-moon.svg" />
+
+          <br />
+          <br />
+        </p>
+      </section>
+
+      <section class="mesh">
+        <h2>Mesh</h2>
+        <p>
+          We then create a Mesh. A Mesh in three represents the combination of a three things:-
+          <ul>
+            <li>
+              A Geometry (the shape of the object). It's common to use primitives for things like a sphere for a globe or a bunch of boxes to draw a 3D graph. It's especially common to use primitives to experiment and get started with 3D. There are various different geometries on <a href="https://threejs.org/manual/#en/primitives">three js docs</a>.
+            </li>
+            <br>
+            <li>
+              A Material (how to draw the object, shiny or flat, what color, what texture(s) to apply. Etc.). Three.js provides several types of materials. They define how objects will appear in the scene.Now there are some basic three js materials :-
+              <ul>
+                <li>
+                  The `MeshBasicMaterial` is not affected by lights. The `MeshLambertMaterial` computes lighting only at the vertices vs the `MeshPhongMaterial` which computes lighting at every pixel. The `MeshPhongMaterial` also supports specular highlights.
+                </li>
+
+                <p>
+                  The materials above use simple math to make materials that look 3D but they aren't what actually happens in real world. The 2 PBR materials use much more complex math to come close to what actually happens in the real world.
+                </p> 
+
+                <li>
+                  The first one is `MeshStandardMaterial`. The biggest difference between `MeshPhongMaterial` and `MeshStandardMaterial` is it uses different parameters. `MeshPhongMaterial` had a shininess setting. `MeshStandardMaterial` has 2 settings roughness and metalness.
+                </li>
+                <br>
+                <li>
+                  The `MeshPhysicalMaterial` is same as the `MeshStandardMaterial` but it adds a clearcoat parameter that goes from 0 to 1 for how much to apply a clearcoat gloss layer and a clearCoatRoughness parameter that specifies how rough the gloss layer is.
+                </li>
+              </ul>
+            </li>
+            <br>
+            <li>
+              The position,orientation, and scale of that object in the scene relative to its parent.
+            </li>
+          </ul>
+          <br />
+        </p>
+      </section>
+
+      <section>
+        <h2>Light</h2>
+        <p>
+          To study about light, please reffer to <a href="light.html">Light</a>. There I have created a plane and two meshes i.e. cube and sphere on 2x2 mirrored plane and used `ORbitControls` for controls menu and `lil-gui` for color assigning.
+        </p> 
+        <p>
+          There are different lights, we start with `ambient` light. This light has no direction. This style of ambient lighting is actually not all that useful as lighting as it's 100% even so other than changing the color of everything in the scene it doesn't look much like lighting. What it does help with is making the darks not too dark.
+        </p>
+        <ul>
+          <li>
+            <b>HemisphereLight</b> : A HemisphereLight takes a sky color and a ground color and just multiplies the material's color between those 2 colors—the sky color if the surface of the object is pointing up and the ground color if the surface of the object is pointing down.
+          </li>
+          <br>
+          <li>
+            <b>DirectionalLight</b> : A DirectionalLight is often used to represent the sun.
+          </li>
+          <br>
+          <li>
+            <b>Point Light</b> : A PointLight is a light that sits at a point and shoots light in all directions from that point.
+          </li>
+        </ul>
+      </section>
+
+      <p class="last">Add these few things in a renderer and then use javascript function requestAnimationFrame, add you are set to go!</p>
+    </main>
+
+    
+  </body>
+</html>
