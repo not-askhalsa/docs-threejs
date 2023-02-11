@@ -30,7 +30,7 @@ scene.add(torus);
 // Lights
 
 const pointLight = new THREE.PointLight(0xffffff);
-pointLight.position.set(5, 5, 5);
+pointLight.position.set(2, 2, 2);
 
 const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(pointLight, ambientLight);
@@ -56,7 +56,7 @@ function addStar() {
   scene.add(star);
 }
 
-Array(300).fill().forEach(addStar);
+Array(500).fill().forEach(addStar);
 
 // Background
 
@@ -96,9 +96,9 @@ dp.position.x = 2;
 
 function moveCamera() {
   const t = document.body.getBoundingClientRect().top;
-  moon.rotation.x += 0.05;
-  moon.rotation.y += 0.075;
-  moon.rotation.z += 0.05;
+  moon.rotation.x += 0.005;
+  moon.rotation.y += 0.0075;
+  moon.rotation.z += 0.005;
 
   dp.rotation.y += 0.01;
   dp.rotation.z += 0.01;
